@@ -114,6 +114,7 @@ class PlayActivity : AppCompatActivity() {
 
         seekBar.onSeekChangeListener = object : OnSeekChangeListener {
             //            val TAG = "seekBar_LOG"
+            var tempSeekParams:Int ?= null
             override fun onSeeking(seekParams: SeekParams) {
                 //                Log.i(TAG, seekParams.seekBar.toString())
                 //                Log.i(TAG, seekParams.progress.toString())
@@ -121,16 +122,15 @@ class PlayActivity : AppCompatActivity() {
                 //                Log.i(TAG, seekParams.fromUser.toString())
 
                 if (seekParams.fromUser) {
-                    mediaPlayer!!.seekTo(seekParams.progress)
                     playingTime.text = mSec(seekParams.progress.toLong())
+                    tempSeekParams = seekParams.progress
                 }
             }
 
             override fun onStartTrackingTouch(seekBar: IndicatorSeekBar) {
-                mediaPlayer!!.pause()
             }
             override fun onStopTrackingTouch(seekBar: IndicatorSeekBar) {
-                mediaPlayer!!.start()
+                mediaPlayer!!.seekTo(tempSeekParams!!)
             }
         }
 
