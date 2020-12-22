@@ -126,9 +126,14 @@ class PlayActivity : AppCompatActivity() {
                 }
             }
 
-            override fun onStartTrackingTouch(seekBar: IndicatorSeekBar) {}
-            override fun onStopTrackingTouch(seekBar: IndicatorSeekBar) {}
+            override fun onStartTrackingTouch(seekBar: IndicatorSeekBar) {
+                mediaPlayer!!.pause()
+            }
+            override fun onStopTrackingTouch(seekBar: IndicatorSeekBar) {
+                mediaPlayer!!.start()
+            }
         }
+
 
 
 
