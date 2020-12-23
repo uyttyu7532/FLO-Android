@@ -93,24 +93,21 @@
 
             <ImageView
                 android:id="@+id/lyrics_close_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
                 android:layout_alignParentEnd="true"
-                android:layout_margin="5dp"
+                android:layout_margin="10dp"
                 android:clickable="true"
                 android:src="@drawable/ic_baseline_close_24"
                 android:visibility="invisible" />
 
             <ImageView
                 android:id="@+id/lyrics_toggle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
                 android:layout_below="@id/lyrics_close_button"
                 android:layout_alignParentEnd="true"
-                android:layout_marginStart="5dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginEnd="5dp"
-                android:layout_marginBottom="5dp"
+                android:layout_marginEnd="10dp"
                 android:clickable="true"
                 android:src="@drawable/ic_baseline_notes_24"
                 android:visibility="invisible" />
@@ -118,8 +115,11 @@
             <TextView
                 android:id="@+id/lyrics_text_view"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_margin="10dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="30dp"
+                android:layout_marginBottom="10dp"
                 android:fadeScrollbars="true"
                 android:scrollbarSize="0dp"
                 android:scrollbars="vertical"

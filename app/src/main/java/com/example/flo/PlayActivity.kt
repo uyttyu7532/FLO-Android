@@ -19,6 +19,7 @@ import com.bumptech.glide.Glide
 import com.warkiz.widget.IndicatorSeekBar
 import com.warkiz.widget.OnSeekChangeListener
 import com.warkiz.widget.SeekParams
+import kotlinx.android.synthetic.main.activity_play.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -30,21 +31,6 @@ class PlayActivity : AppCompatActivity() {
     lateinit var songUrl: String
     var mediaPlayer: MediaPlayer? = null
 
-    lateinit var songSinger: TextView
-    lateinit var songAlbum: TextView
-    lateinit var songTitle: TextView
-    lateinit var albumImg: ImageView
-    lateinit var lyrics: TextView
-    lateinit var playBtn: ImageView
-    lateinit var pauseBtn: ImageView
-    lateinit var seekBar: IndicatorSeekBar
-    lateinit var playingTime: TextView
-    lateinit var songTime: TextView
-    lateinit var lyricsLayout: RelativeLayout
-    lateinit var lyricsCardView: CardView
-    lateinit var albumImgCardView: CardView
-    lateinit var lyricsCloseButton: ImageView
-    lateinit var lyricsToggle: ImageView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,34 +43,6 @@ class PlayActivity : AppCompatActivity() {
             setAudioStreamType(AudioManager.STREAM_MUSIC)
         }
 
-        songSinger = findViewById(R.id.song_singer)
-        songAlbum = findViewById(R.id.song_album)
-        songTitle = findViewById(R.id.song_title)
-        albumImg = findViewById(R.id.album_img)
-        lyrics = findViewById(R.id.lyrics_text_view)
-        playBtn = findViewById(R.id.play_btn)
-        pauseBtn = findViewById(R.id.pause_btn)
-        seekBar = findViewById(R.id.seek_bar)
-        playingTime = findViewById(R.id.playing_time)
-        songTime = findViewById(R.id.song_time)
-        lyricsLayout = findViewById(R.id.lyrics_layout)
-        albumImgCardView = findViewById(R.id.album_img_card_view)
-        lyricsCardView = findViewById(R.id.lyrics_card_view)
-        lyricsCloseButton = findViewById(R.id.lyrics_close_button)
-        lyricsToggle = findViewById(R.id.lyrics_toggle)
-
-        fun mSec(mSec: Long): String {
-            val hours: Long = mSec / 1000 / 60 / 60 % 24
-            val minutes: Long = mSec / 1000 / 60 % 60
-            val seconds: Long = mSec / 1000 % 60
-
-            return if (mSec < 3600000) {
-                String.format("%02d:%02d", minutes, seconds)
-            } else {
-                String.format("%02d:%02d:%02d", hours, minutes, seconds)
-            }
-        }
-
 
         // 쓰레드로 seekBar이동
         class MyThread : Thread() {
@@ -92,8 +50,8 @@ class PlayActivity : AppCompatActivity() {
                 while (mediaPlayer!!.isPlaying) {
                     SystemClock.sleep(500)
                     runOnUiThread {
-                        seekBar.setProgress((mediaPlayer!!.currentPosition).toFloat())
-                        playingTime.text = mSec(mediaPlayer!!.currentPosition.toLong())
+                        seek_bar.setProgress((mediaPlayer!!.currentPosition).toFloat())
+                        playing_time.text = mSec(mediaPlayer!!.currentPosition.toLong())
                     }
                 }
             }
@@ -101,8 +59,8 @@ class PlayActivity : AppCompatActivity() {
 
 
         fun playSong() {
-            playBtn.visibility = GONE
-            pauseBtn.visibility = VISIBLE
+            play_btn.visibility = GONE
+            pause_btn.visibility = VISIBLE
 
             // 노래 재생
             mediaPlayer!!.start()
@@ -110,8 +68,8 @@ class PlayActivity : AppCompatActivity() {
         }
 
         fun pauseSong() {
-            pauseBtn.visibility = GONE
-            playBtn.visibility = VISIBLE
+            pause_btn.visibility = GONE
+            play_btn.visibility = VISIBLE
 
             // 노래 일시정지
             mediaPlayer!!.pause()
@@ -123,7 +81,7 @@ class PlayActivity : AppCompatActivity() {
         }
 
 
-        seekBar.onSeekChangeListener = object : OnSeekChangeListener {
+        seek_bar.onSeekChangeListener = object : OnSeekChangeListener {
             //            val TAG = "seekBar_LOG"
             var tempSeekParams: Int? = null
             override fun onSeeking(seekParams: SeekParams) {
@@ -133,7 +91,7 @@ class PlayActivity : AppCompatActivity() {
                 //                Log.i(TAG, seekParams.fromUser.toString())
 
                 if (seekParams.fromUser) {
-                    playingTime.text = mSec(seekParams.progress.toLong())
+                    playing_time.text = mSec(seekParams.progress.toLong())
                     tempSeekParams = seekParams.progress
                 }
             }
@@ -151,51 +109,51 @@ class PlayActivity : AppCompatActivity() {
 
 
 
-        playBtn.setOnClickListener {
+        play_btn.setOnClickListener {
             playSong()
         }
 
-        pauseBtn.setOnClickListener {
+        pause_btn.setOnClickListener {
             pauseSong()
         }
 
-        lyricsLayout.setOnClickListener {
-            Log.d("albumImgCardView", albumImgCardView.visibility.toString())
-            if (albumImgCardView.visibility == 0) { // VISIBLE
-                albumImgCardView.visibility = GONE
-                lyricsCloseButton.visibility = VISIBLE
-                lyricsToggle.visibility = VISIBLE
-            } else if (albumImgCardView.visibility == 8) { // GONE
+        lyrics_layout.setOnClickListener {
+            Log.d("albumImgCardView", album_img_card_view.visibility.toString())
+            if (album_img_card_view.visibility == 0) { // VISIBLE
+                album_img_card_view.visibility = GONE
+                lyrics_close_button.visibility = VISIBLE
+                lyrics_toggle.visibility = VISIBLE
+            } else if (album_img_card_view.visibility == 8) { // GONE
                 if (!isMovable) {
-                    albumImgCardView.visibility = VISIBLE
-                    lyricsCloseButton.visibility = INVISIBLE
-                    lyricsToggle.visibility = INVISIBLE
-                    lyrics.movementMethod = null
+                    album_img_card_view.visibility = VISIBLE
+                    lyrics_close_button.visibility = INVISIBLE
+                    lyrics_toggle.visibility = INVISIBLE
+                    lyrics_text_view.movementMethod = null
                 }
                 else {
-                    lyrics.movementMethod = ScrollingMovementMethod() // 가사 스크롤
+                    lyrics_text_view.movementMethod = ScrollingMovementMethod() // 가사 스크롤
                 }
             }
         }
 
-        lyricsCloseButton.setOnClickListener {
-            lyrics.movementMethod = null
-            albumImgCardView.visibility = VISIBLE
-            lyricsCloseButton.visibility = INVISIBLE
-            lyricsToggle.visibility = INVISIBLE
+        lyrics_close_button.setOnClickListener {
+            lyrics_text_view.movementMethod = null
+            album_img_card_view.visibility = VISIBLE
+            lyrics_close_button.visibility = INVISIBLE
+            lyrics_toggle.visibility = INVISIBLE
         }
 
-        lyricsToggle.setOnClickListener {
+        lyrics_toggle.setOnClickListener {
             isMovable = !isMovable
             if (isMovable) {
-                lyrics.movementMethod = ScrollingMovementMethod() // 가사 스크롤
-                lyricsToggle.setColorFilter(
+                lyrics_text_view.movementMethod = ScrollingMovementMethod() // 가사 스크롤
+                lyrics_toggle.setColorFilter(
                     ContextCompat.getColor(this, R.color.colorPrimary),
                     android.graphics.PorterDuff.Mode.SRC_IN
                 )
             } else {
-                lyrics.movementMethod = null
-                lyricsToggle.setColorFilter(
+                lyrics_text_view.movementMethod = null
+                lyrics_toggle.setColorFilter(
                     ContextCompat.getColor(this, R.color.colorDefault),
                     android.graphics.PorterDuff.Mode.SRC_IN
                 )
@@ -222,11 +180,11 @@ class PlayActivity : AppCompatActivity() {
                         200 -> {
                             if (data != null) {
                                 songUrl = data.file
-                                songSinger.text = data!!.singer
-                                songTitle.text = data!!.title
-                                songAlbum.text = data!!.album
-                                lyrics.text = data!!.lyrics
-                                Glide.with(mContext).load(data!!.image).into(albumImg)
+                                song_singer.text = data!!.singer
+                                song_title.text = data!!.title
+                                song_album.text = data!!.album
+                                lyrics_text_view.text = data!!.lyrics
+                                Glide.with(mContext).load(data!!.image).into(album_img)
                             }
 
                             mediaPlayer!!.apply {
@@ -235,9 +193,9 @@ class PlayActivity : AppCompatActivity() {
                                 playSong()
                             }
 
-                            seekBar.max = (mediaPlayer!!.duration).toFloat()
+                            seek_bar.max = (mediaPlayer!!.duration).toFloat()
                             var mSec: Long = (mediaPlayer!!.duration).toLong()
-                            songTime.text = mSec(mSec)
+                            song_time.text = mSec(mSec)
                         }
                     }
                 }
@@ -252,6 +210,18 @@ class PlayActivity : AppCompatActivity() {
         if (mediaPlayer != null) {
             mediaPlayer!!.release()
             mediaPlayer = null
+        }
+    }
+
+    fun mSec(mSec: Long): String {
+        val hours: Long = mSec / 1000 / 60 / 60 % 24
+        val minutes: Long = mSec / 1000 / 60 % 60
+        val seconds: Long = mSec / 1000 % 60
+
+        return if (mSec < 3600000) {
+            String.format("%02d:%02d", minutes, seconds)
+        } else {
+            String.format("%02d:%02d:%02d", hours, minutes, seconds)
         }
     }
 }
