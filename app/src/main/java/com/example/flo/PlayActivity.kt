@@ -107,8 +107,6 @@ class PlayActivity : AppCompatActivity() {
         }
 
 
-
-
         play_btn.setOnClickListener {
             playSong()
         }
@@ -129,8 +127,7 @@ class PlayActivity : AppCompatActivity() {
                     lyrics_close_button.visibility = INVISIBLE
                     lyrics_toggle.visibility = INVISIBLE
                     lyrics_text_view.movementMethod = null
-                }
-                else {
+                } else {
                     lyrics_text_view.movementMethod = ScrollingMovementMethod() // 가사 스크롤
                 }
             }
@@ -213,16 +210,18 @@ class PlayActivity : AppCompatActivity() {
         }
     }
 
-    fun mSec(mSec: Long): String {
-        val hours: Long = mSec / 1000 / 60 / 60 % 24
-        val minutes: Long = mSec / 1000 / 60 % 60
-        val seconds: Long = mSec / 1000 % 60
+}
 
-        return if (mSec < 3600000) {
-            String.format("%02d:%02d", minutes, seconds)
-        } else {
-            String.format("%02d:%02d:%02d", hours, minutes, seconds)
-        }
+
+fun mSec(mSec: Long): String {
+    val hours: Long = mSec / 1000 / 60 / 60 % 24
+    val minutes: Long = mSec / 1000 / 60 % 60
+    val seconds: Long = mSec / 1000 % 60
+
+    return if (mSec < 3600000) {
+        String.format("%02d:%02d", minutes, seconds)
+    } else {
+        String.format("%02d:%02d:%02d", hours, minutes, seconds)
     }
 }
 
