@@ -11,8 +11,10 @@ import android.view.View.*
 import android.widget.ImageView
 import android.widget.RelativeLayout
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
+import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
 import com.warkiz.widget.IndicatorSeekBar
 import com.warkiz.widget.OnSeekChangeListener
@@ -39,15 +41,17 @@ class PlayActivity : AppCompatActivity() {
     lateinit var playingTime: TextView
     lateinit var songTime: TextView
     lateinit var lyricsLayout: RelativeLayout
-    lateinit var lyricsCardView:CardView
+    lateinit var lyricsCardView: CardView
     lateinit var albumImgCardView: CardView
     lateinit var lyricsCloseButton: ImageView
+    lateinit var lyricsToggle: ImageView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_play)
 
         mContext = this
+        var isMovable = false
 
         mediaPlayer = MediaPlayer().apply {
             setAudioStreamType(AudioManager.STREAM_MUSIC)
@@ -67,7 +71,7 @@ class PlayActivity : AppCompatActivity() {
         albumImgCardView = findViewById(R.id.album_img_card_view)
         lyricsCardView = findViewById(R.id.lyrics_card_view)
         lyricsCloseButton = findViewById(R.id.lyrics_close_button)
-
+        lyricsToggle = findViewById(R.id.lyrics_toggle)
 
         fun mSec(mSec: Long): String {
             val hours: Long = mSec / 1000 / 60 / 60 % 24
@@ -156,26 +160,46 @@ class PlayActivity : AppCompatActivity() {
         }
 
         lyricsLayout.setOnClickListener {
-            Log.d("albumImgCardView", albumImgCardView.visibility.toString() )
+            Log.d("albumImgCardView", albumImgCardView.visibility.toString())
             if (albumImgCardView.visibility == 0) { // VISIBLE
                 albumImgCardView.visibility = GONE
                 lyricsCloseButton.visibility = VISIBLE
-            }
-            else if(albumImgCardView.visibility == 8) { // GONE
-                lyricsCloseButton.visibility = INVISIBLE
-                if( true ) { // TODO 가사이동 토글이 꺼져있다면
+                lyricsToggle.visibility = VISIBLE
+            } else if (albumImgCardView.visibility == 8) { // GONE
+                if (!isMovable) {
                     albumImgCardView.visibility = VISIBLE
+                    lyricsCloseButton.visibility = INVISIBLE
+                    lyricsToggle.visibility = INVISIBLE
                     lyrics.movementMethod = null
                 }
-                else{ // TODO 가사 이동 토글이 켜져있다면
+                else {
                     lyrics.movementMethod = ScrollingMovementMethod() // 가사 스크롤
                 }
             }
         }
 
-        lyricsCloseButton.setOnClickListener{
+        lyricsCloseButton.setOnClickListener {
+            lyrics.movementMethod = null
             albumImgCardView.visibility = VISIBLE
             lyricsCloseButton.visibility = INVISIBLE
+            lyricsToggle.visibility = INVISIBLE
+        }
+
+        lyricsToggle.setOnClickListener {
+            isMovable = !isMovable
+            if (isMovable) {
+                lyrics.movementMethod = ScrollingMovementMethod() // 가사 스크롤
+                lyricsToggle.setColorFilter(
+                    ContextCompat.getColor(this, R.color.colorPrimary),
+                    android.graphics.PorterDuff.Mode.SRC_IN
+                )
+            } else {
+                lyrics.movementMethod = null
+                lyricsToggle.setColorFilter(
+                    ContextCompat.getColor(this, R.color.colorDefault),
+                    android.graphics.PorterDuff.Mode.SRC_IN
+                )
+            }
         }
 
 
