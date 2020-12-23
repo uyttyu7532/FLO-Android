@@ -2,8 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.flo">
 
-    <uses-permission android:name="android.permission.INTERNET" /> // 인터넷 권한
-    <uses-permission android:name="android.permission.WAKE_LOCK" /> // 화면 어두워지는 것 방지
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <application
         android:allowBackup="true"

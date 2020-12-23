@@ -7,11 +7,12 @@ import android.os.Bundle
 import android.os.SystemClock
 import android.text.method.ScrollingMovementMethod
 import android.util.Log
-import android.view.View.GONE
-import android.view.View.VISIBLE
+import android.view.View.*
 import android.widget.ImageView
+import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.cardview.widget.CardView
 import com.bumptech.glide.Glide
 import com.warkiz.widget.IndicatorSeekBar
 import com.warkiz.widget.OnSeekChangeListener
@@ -37,6 +38,10 @@ class PlayActivity : AppCompatActivity() {
     lateinit var seekBar: IndicatorSeekBar
     lateinit var playingTime: TextView
     lateinit var songTime: TextView
+    lateinit var lyricsLayout: RelativeLayout
+    lateinit var lyricsCardView:CardView
+    lateinit var albumImgCardView: CardView
+    lateinit var lyricsCloseButton: ImageView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,9 +63,11 @@ class PlayActivity : AppCompatActivity() {
         seekBar = findViewById(R.id.seek_bar)
         playingTime = findViewById(R.id.playing_time)
         songTime = findViewById(R.id.song_time)
+        lyricsLayout = findViewById(R.id.lyrics_layout)
+        albumImgCardView = findViewById(R.id.album_img_card_view)
+        lyricsCardView = findViewById(R.id.lyrics_card_view)
+        lyricsCloseButton = findViewById(R.id.lyrics_close_button)
 
-
-        lyrics.movementMethod = ScrollingMovementMethod() // 가사 스크롤
 
         fun mSec(mSec: Long): String {
             val hours: Long = mSec / 1000 / 60 / 60 % 24
@@ -114,7 +121,7 @@ class PlayActivity : AppCompatActivity() {
 
         seekBar.onSeekChangeListener = object : OnSeekChangeListener {
             //            val TAG = "seekBar_LOG"
-            var tempSeekParams:Int ?= null
+            var tempSeekParams: Int? = null
             override fun onSeeking(seekParams: SeekParams) {
                 //                Log.i(TAG, seekParams.seekBar.toString())
                 //                Log.i(TAG, seekParams.progress.toString())
@@ -128,8 +135,11 @@ class PlayActivity : AppCompatActivity() {
             }
 
             override fun onStartTrackingTouch(seekBar: IndicatorSeekBar) {
+                // TODO seekBar를 움직이는 동안 디자인을 바꿨다가
             }
+
             override fun onStopTrackingTouch(seekBar: IndicatorSeekBar) {
+                // TODO seekBar 움직임이 끝나면 원상복귀해도 괜찮을듯
                 mediaPlayer!!.seekTo(tempSeekParams!!)
             }
         }
@@ -144,6 +154,31 @@ class PlayActivity : AppCompatActivity() {
         pauseBtn.setOnClickListener {
             pauseSong()
         }
+
+        lyricsLayout.setOnClickListener {
+            Log.d("albumImgCardView", albumImgCardView.visibility.toString() )
+            if (albumImgCardView.visibility == 0) { // VISIBLE
+                albumImgCardView.visibility = GONE
+                lyricsCloseButton.visibility = VISIBLE
+            }
+            else if(albumImgCardView.visibility == 8) { // GONE
+                lyricsCloseButton.visibility = INVISIBLE
+                if( true ) { // TODO 가사이동 토글이 꺼져있다면
+                    albumImgCardView.visibility = VISIBLE
+                    lyrics.movementMethod = null
+                }
+                else{ // TODO 가사 이동 토글이 켜져있다면
+                    lyrics.movementMethod = ScrollingMovementMethod() // 가사 스크롤
+                }
+            }
+        }
+
+        lyricsCloseButton.setOnClickListener{
+            albumImgCardView.visibility = VISIBLE
+            lyricsCloseButton.visibility = INVISIBLE
+        }
+
+
 
 
 
@@ -161,12 +196,14 @@ class PlayActivity : AppCompatActivity() {
                     Log.d("retrofit2 ::", response.code().toString() + response.body().toString())
                     when (response.code()) {
                         200 -> {
-                            songUrl = data!!.file
-                            songSinger.text = data!!.singer
-                            songTitle.text = data!!.title
-                            songAlbum.text = data!!.album
-                            lyrics.text = data!!.lyrics
-                            Glide.with(mContext).load(data!!.image).into(albumImg)
+                            if (data != null) {
+                                songUrl = data.file
+                                songSinger.text = data!!.singer
+                                songTitle.text = data!!.title
+                                songAlbum.text = data!!.album
+                                lyrics.text = data!!.lyrics
+                                Glide.with(mContext).load(data!!.image).into(albumImg)
+                            }
 
                             mediaPlayer!!.apply {
                                 setDataSource(songUrl)
