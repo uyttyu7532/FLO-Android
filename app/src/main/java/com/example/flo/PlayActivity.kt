@@ -186,7 +186,7 @@ class PlayActivity : AppCompatActivity() {
                             if (data != null) {
                                 songUrl = data.file
                                 lyrics_text_view.text = data!!.lyrics
-                                Glide.with(mContext).load(data!!.image).into(album_img)
+//                                Glide.with(mContext).load(data!!.image).into(album_img)
                                 binding.song = Song(
                                     data.singer,
                                     data.album,
@@ -240,7 +240,6 @@ class PlayActivity : AppCompatActivity() {
     }
 
 }
-
 
 fun mSec(mSec: Long): String {
     val hours: Long = mSec / 1000 / 60 / 60 % 24
