@@ -2,7 +2,7 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.example.flo.Lyric
+import com.example.flo.viewmodel.Lyric
 import com.example.flo.databinding.RowBinding
 
 class LyricsAdapter (private val context : Context, private val data:List<Lyric>) : RecyclerView.Adapter<LyricsAdapter.LyricsVH>() {

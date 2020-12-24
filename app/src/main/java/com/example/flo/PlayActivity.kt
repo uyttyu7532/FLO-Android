@@ -9,17 +9,13 @@ import android.os.SystemClock
 import android.text.method.ScrollingMovementMethod
 import android.util.Log
 import android.view.View.*
-import android.widget.ImageView
-import android.widget.RelativeLayout
-import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.bumptech.glide.Glide
 import com.example.flo.databinding.ActivityPlayBinding
+import com.example.flo.viewmodel.Lyric
+import com.example.flo.viewmodel.Song
 import com.warkiz.widget.IndicatorSeekBar
 import com.warkiz.widget.OnSeekChangeListener
 import com.warkiz.widget.SeekParams
@@ -220,7 +216,7 @@ class PlayActivity : AppCompatActivity() {
 
 
                                 seek_bar.max = (mediaPlayer!!.duration).toFloat()
-                                song_time.text = mSec((mediaPlayer!!.duration).toLong())
+//                                song_time.text = mSec((mediaPlayer!!.duration).toLong())
                             }
                         }
                     }

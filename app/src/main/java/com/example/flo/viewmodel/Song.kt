@@ -1,4 +1,4 @@
-package com.example.flo
+package com.example.flo.viewmodel
 
 data class Song(
     val singer: String,
