@@ -7,7 +7,6 @@ import android.media.AudioManager
 import android.media.MediaPlayer
 import android.os.Bundle
 import android.os.SystemClock
-import android.text.method.ScrollingMovementMethod
 import android.util.Log
 import android.view.View
 import android.view.View.*
@@ -22,7 +21,6 @@ import com.warkiz.widget.IndicatorSeekBar
 import com.warkiz.widget.OnSeekChangeListener
 import com.warkiz.widget.SeekParams
 import kotlinx.android.synthetic.main.activity_play.*
-import kotlinx.android.synthetic.main.row.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -57,11 +55,26 @@ class PlayActivity : AppCompatActivity() {
         lyrics_recycler_view.layoutManager = LinearLayoutManager(mContext)
         adapter.itemClick = object : LyricsAdapter.ItemClick {
             override fun onClick(view: View, lyric_time: Int) {
-                playing_time.text = mSec2Time(lyric_time / 1000.toLong())
-                mediaPlayer!!.seekTo(lyric_time)
+                if (isMovable && album_img_card_view.visibility == 8) { // 가사 이동 모드
+                    playing_time.text = mSec2Time(lyric_time / 1000.toLong())
+                    mediaPlayer!!.seekTo(lyric_time)
+                } else {
+//                    lyrics_recycler_view.suppressLayout(true)
+                    if (album_img_card_view.visibility == 0) { // play -> lyric
+                        album_img_card_view.visibility = GONE
+                        lyrics_close_button.visibility = VISIBLE
+                        lyrics_toggle.visibility = VISIBLE
+                    } else if (album_img_card_view.visibility == 8) { // lyric -> play
+                        album_img_card_view.visibility = VISIBLE
+                        lyrics_close_button.visibility = INVISIBLE
+                        lyrics_toggle.visibility = INVISIBLE
+                    }
+                }
             }
         }
         lyrics_recycler_view.adapter = adapter
+
+
 
         // 쓰레드로 seekBar이동
         class MyThread : Thread() {
@@ -73,19 +86,22 @@ class PlayActivity : AppCompatActivity() {
                         seek_bar.setProgress((mediaPlayer!!.currentPosition).toFloat())
                         playing_time.text = mSec2Time(mediaPlayer!!.currentPosition / 1000.toLong())
                         var tmpIndex = findLowerBound(lyricList, (mediaPlayer!!.currentPosition))
-                        if(nowIndex != tmpIndex){
+                        if (nowIndex != tmpIndex) {
                             lyricList[tmpIndex].colors = Color.parseColor("#ff0000")
-                            if(nowIndex >= 0){
+                            if (nowIndex >= 0) {
                                 lyricList[nowIndex].colors = Color.parseColor("#757575")
                             }
                             nowIndex = tmpIndex
 
                             var centerOfScreen = lyrics_recycler_view.height / 3
-                            (lyrics_recycler_view.layoutManager as LinearLayoutManager).scrollToPositionWithOffset(tmpIndex, centerOfScreen);
+                            (lyrics_recycler_view.layoutManager as LinearLayoutManager).scrollToPositionWithOffset(
+                                tmpIndex,
+                                centerOfScreen
+                            );
                         }
 
 
-                        Log.d("time",tmpIndex.toString() +""+ nowIndex)
+                        Log.d("time", tmpIndex.toString() + "" + nowIndex)
                     }
                 }
             }
@@ -146,7 +162,6 @@ class PlayActivity : AppCompatActivity() {
 
 
         lyrics_layout.setOnClickListener {
-            Log.d("albumImgCardView", album_img_card_view.visibility.toString())
             if (album_img_card_view.visibility == 0) { // VISIBLE
                 album_img_card_view.visibility = GONE
                 lyrics_close_button.visibility = VISIBLE
@@ -156,15 +171,15 @@ class PlayActivity : AppCompatActivity() {
                     album_img_card_view.visibility = VISIBLE
                     lyrics_close_button.visibility = INVISIBLE
                     lyrics_toggle.visibility = INVISIBLE
-                    lyrics_text_view.movementMethod = null
+//                    lyrics_text_view.movementMethod = null
                 } else {
-                    lyrics_text_view.movementMethod = ScrollingMovementMethod() // 가사 스크롤
+//                    lyrics_text_view.movementMethod = ScrollingMovementMethod() // 가사 스크롤
                 }
             }
         }
 
         lyrics_close_button.setOnClickListener {
-            lyrics_text_view.movementMethod = null
+//            lyrics_text_view.movementMethod = null
             album_img_card_view.visibility = VISIBLE
             lyrics_close_button.visibility = INVISIBLE
             lyrics_toggle.visibility = INVISIBLE
@@ -173,21 +188,19 @@ class PlayActivity : AppCompatActivity() {
         lyrics_toggle.setOnClickListener {
             isMovable = !isMovable
             if (isMovable) {
-                lyrics_text_view.movementMethod = ScrollingMovementMethod() // 가사 스크롤
+//                lyrics_text_view.movementMethod = ScrollingMovementMethod() // 가사 스크롤
                 lyrics_toggle.setColorFilter(
                     ContextCompat.getColor(this, R.color.colorPrimary),
                     android.graphics.PorterDuff.Mode.SRC_IN
                 )
             } else {
-                lyrics_text_view.movementMethod = null
+//                lyrics_text_view.movementMethod = null
                 lyrics_toggle.setColorFilter(
                     ContextCompat.getColor(this, R.color.colorDefault),
                     android.graphics.PorterDuff.Mode.SRC_IN
                 )
             }
         }
-
-
 
 
 
@@ -207,7 +220,7 @@ class PlayActivity : AppCompatActivity() {
                         200 -> {
                             if (data != null) {
                                 songUrl = data.file
-                                lyrics_text_view.text = data!!.lyrics
+                                //lyrics_text_view.text = data!!.lyrics
 //                                Glide.with(mContext).load(data!!.image).into(album_img)
                                 binding.song = Song(
                                     data.singer,
@@ -293,7 +306,7 @@ fun findLowerBound(lyrics: List<Lyric>, target: Int): Int {
     var mid = 0
     var end = lyrics.size - 1
 
-    if(target >= lyrics[end].time){
+    if (target >= lyrics[end].time) {
         return end
     }
 
@@ -302,11 +315,11 @@ fun findLowerBound(lyrics: List<Lyric>, target: Int): Int {
         if (lyrics[mid].time >= target) {
             end = mid
         } else {
-            start = mid+1
+            start = mid + 1
         }
     }
 
-    return if (end == 0) 0 else end-1
+    return if (end == 0) 0 else end - 1
 }
 
 
