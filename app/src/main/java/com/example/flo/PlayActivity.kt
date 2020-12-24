@@ -2,6 +2,7 @@ package com.example.flo
 
 import LyricsAdapter
 import android.content.Context
+import android.graphics.Color
 import android.media.AudioManager
 import android.media.MediaPlayer
 import android.os.Bundle
@@ -62,14 +63,21 @@ class PlayActivity : AppCompatActivity() {
         // 쓰레드로 seekBar이동
         class MyThread : Thread() {
             override fun run() {
+                var nowIndex = -1
                 while (mediaPlayer!!.isPlaying) {
-                    SystemClock.sleep(500)
+                    SystemClock.sleep(200)
                     runOnUiThread {
                         seek_bar.setProgress((mediaPlayer!!.currentPosition).toFloat())
                         playing_time.text = mSec2Time(mediaPlayer!!.currentPosition / 1000.toLong())
-                        Log.d("time", lyricList[findLowerBound(lyricList, (mediaPlayer!!.currentPosition))].toString())
-
-                        lyrics_recycler_view.adapter = LyricsAdapter(mContext, lyricList)
+                        var tmpIndex = findLowerBound(lyricList, (mediaPlayer!!.currentPosition))
+                        if(nowIndex != tmpIndex){
+                            lyricList[tmpIndex].colors = Color.parseColor("#ff0000")
+                            if(nowIndex >= 0){
+                                lyricList[nowIndex].colors = Color.parseColor("#757575")
+                            }
+                            nowIndex = tmpIndex
+                        }
+                        Log.d("time",tmpIndex.toString() +""+ nowIndex)
                     }
                 }
             }
@@ -103,14 +111,10 @@ class PlayActivity : AppCompatActivity() {
             //            val TAG = "seekBar_LOG"
             var tempSeekParams: Int? = null
             override fun onSeeking(seekParams: SeekParams) {
-                //                Log.i(TAG, seekParams.seekBar.toString())
-                //                Log.i(TAG, seekParams.progress.toString())
-                //                Log.i(TAG, seekParams.progressFloat.toString())
-                //                Log.i(TAG, seekParams.fromUser.toString())
-
                 if (seekParams.fromUser) {
                     playing_time.text = mSec2Time(seekParams.progress / 1000.toLong())
                     tempSeekParams = seekParams.progress
+                    seek_bar.setProgress(seekParams.progress.toFloat())
                 }
             }
 
@@ -212,12 +216,11 @@ class PlayActivity : AppCompatActivity() {
                                 }
 
                                 for (it in data.lyrics.split("\n")) {
-                                    lyricList.add(
-                                        Lyric(
-                                            time2mSec(it),
-                                            it.split("]")[1]
-                                        )
-                                    )
+                                    var tmpLy = Lyric()
+                                    tmpLy.time = time2mSec(it)
+                                    tmpLy.lyric = it.split("]")[1]
+                                    tmpLy.colors = Color.parseColor("#757575")
+                                    lyricList.add(tmpLy)
                                 }
 
                                 Log.d("lyrics", lyricList.toString())
@@ -280,16 +283,20 @@ fun findLowerBound(lyrics: List<Lyric>, target: Int): Int {
     var mid = 0
     var end = lyrics.size - 1
 
+    if(target >= lyrics[end].time){
+        return end
+    }
+
     while (end > start) { // end가 start보다 같거나 작아지면 종료
         mid = (start + end) / 2
         if (lyrics[mid].time >= target) {
             end = mid
         } else {
-            start = mid + 1
+            start = mid+1
         }
     }
 
-    return end
+    return if (end == 0) 0 else end-1
 }
 
 

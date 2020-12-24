@@ -31,4 +31,15 @@ object BindingAdapter {
             view.text = String.format("%02d:%02d:%02d", hours, minutes, seconds)
         }
     }
+
+//    @BindingAdapter("textColor")
+//    @JvmStatic
+//    fun isHighlighting(view:TextView, isHighlight:Boolean){
+//        if(isHighlight){
+//            view.setTextColor(Color.parseColor(R.color.colorDefault.toString()))
+//        }
+//        else{
+//            view.setTextColor(Color.parseColor(R.color.colorPrimary.toString()))
+//        }
+//    }
 }
