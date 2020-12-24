@@ -1,5 +1,6 @@
 package com.example.flo
 
+import LyricsAdapter
 import android.content.Context
 import android.media.AudioManager
 import android.media.MediaPlayer
@@ -16,6 +17,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.example.flo.databinding.ActivityPlayBinding
 import com.warkiz.widget.IndicatorSeekBar
@@ -34,11 +36,11 @@ class PlayActivity : AppCompatActivity() {
     var mediaPlayer: MediaPlayer? = null
 
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val binding:ActivityPlayBinding = DataBindingUtil.setContentView(this, R.layout.activity_play)
+        val binding: ActivityPlayBinding =
+            DataBindingUtil.setContentView(this, R.layout.activity_play)
 
 
         mContext = this
@@ -47,6 +49,7 @@ class PlayActivity : AppCompatActivity() {
         mediaPlayer = MediaPlayer().apply {
             setAudioStreamType(AudioManager.STREAM_MUSIC)
         }
+
 
 
         // 쓰레드로 seekBar이동
@@ -184,7 +187,15 @@ class PlayActivity : AppCompatActivity() {
                                 songUrl = data.file
                                 lyrics_text_view.text = data!!.lyrics
                                 Glide.with(mContext).load(data!!.image).into(album_img)
-                                binding.song = Song(data.singer,data.album,data.title,data.duration,data.image,data.file,data.lyrics)
+                                binding.song = Song(
+                                    data.singer,
+                                    data.album,
+                                    data.title,
+                                    data.duration,
+                                    data.image,
+                                    data.file,
+                                    data.lyrics
+                                )
 
                                 mediaPlayer!!.apply {
                                     setDataSource(songUrl)
@@ -192,9 +203,24 @@ class PlayActivity : AppCompatActivity() {
                                     playSong()
                                 }
 
+                                val lyricList: MutableList<Lyric> = mutableListOf()
+                                for (it in data.lyrics.split("\n")) {
+                                    lyricList.add(
+                                        Lyric(
+                                            it.split("[")[1].split("]")[0],
+                                            it.split("]")[1]
+                                        )
+                                    )
+                                }
+
+                                Log.d("lyrics",lyricList.toString())
+
+                                lyrics_recycler_view.adapter = LyricsAdapter(mContext, lyricList)
+                                lyrics_recycler_view.layoutManager = LinearLayoutManager(mContext)
+
+
                                 seek_bar.max = (mediaPlayer!!.duration).toFloat()
-                                var mSec: Long = (mediaPlayer!!.duration).toLong()
-                                song_time.text = mSec(mSec)
+                                song_time.text = mSec((mediaPlayer!!.duration).toLong())
                             }
                         }
                     }
