@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.os.SystemClock
 import android.text.method.ScrollingMovementMethod
 import android.util.Log
+import android.view.View
 import android.view.View.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -55,7 +56,7 @@ class PlayActivity : AppCompatActivity() {
                     SystemClock.sleep(500)
                     runOnUiThread {
                         seek_bar.setProgress((mediaPlayer!!.currentPosition).toFloat())
-                        playing_time.text = mSec(mediaPlayer!!.currentPosition.toLong())
+                        playing_time.text = mSec2Time(mediaPlayer!!.currentPosition/1000.toLong())
                     }
                 }
             }
@@ -95,7 +96,7 @@ class PlayActivity : AppCompatActivity() {
                 //                Log.i(TAG, seekParams.fromUser.toString())
 
                 if (seekParams.fromUser) {
-                    playing_time.text = mSec(seekParams.progress.toLong())
+                    playing_time.text = mSec2Time(seekParams.progress/1000.toLong())
                     tempSeekParams = seekParams.progress
                 }
             }
@@ -203,20 +204,26 @@ class PlayActivity : AppCompatActivity() {
                                 for (it in data.lyrics.split("\n")) {
                                     lyricList.add(
                                         Lyric(
-                                            it.split("[")[1].split("]")[0],
+                                            time2mSec(it),
                                             it.split("]")[1]
                                         )
                                     )
                                 }
 
-                                Log.d("lyrics",lyricList.toString())
+                                Log.d("lyrics", lyricList.toString())
 
-                                lyrics_recycler_view.adapter = LyricsAdapter(mContext, lyricList)
+                                val adapter = LyricsAdapter(mContext, lyricList)
+
                                 lyrics_recycler_view.layoutManager = LinearLayoutManager(mContext)
-
-
+                                adapter.itemClick = object : LyricsAdapter.ItemClick {
+                                    override fun onClick(view: View, lyric_time: Int) {
+                                        playing_time.text = mSec2Time(lyric_time/1000.toLong())
+                                        mediaPlayer!!.seekTo(lyric_time)
+                                    }
+                                }
+                                lyrics_recycler_view.adapter = adapter
                                 seek_bar.max = (mediaPlayer!!.duration).toFloat()
-//                                song_time.text = mSec((mediaPlayer!!.duration).toLong())
+                                song_time.text = mSec2Time((mediaPlayer!!.duration).toLong())
                             }
                         }
                     }
@@ -237,16 +244,25 @@ class PlayActivity : AppCompatActivity() {
 
 }
 
-fun mSec(mSec: Long): String {
-    val hours: Long = mSec / 1000 / 60 / 60 % 24
-    val minutes: Long = mSec / 1000 / 60 % 60
-    val seconds: Long = mSec / 1000 % 60
+fun mSec2Time(mSec: Long): String {
+    val hours: Long = mSec / 60 / 60 % 24
+    val minutes: Long = mSec / 60 % 60
+    val seconds: Long = mSec  % 60
 
     return if (mSec < 3600000) {
         String.format("%02d:%02d", minutes, seconds)
     } else {
         String.format("%02d:%02d:%02d", hours, minutes, seconds)
     }
+}
+
+fun time2mSec(time: String): Int {
+    val timeList = time.split("[")[1].split("]")[0].split(":")
+    val min = timeList[0].toInt()
+    val sec = timeList[1].toInt()
+    val msec = timeList[2].toInt()
+
+    return min * 60000 + sec * 1000 + msec
 }
 
 

@@ -1,3 +1,3 @@
 package com.example.flo.viewmodel
 
-data class Lyric(val time: String, val lyric: String)
+data class Lyric(val time: Int, val lyric: String)

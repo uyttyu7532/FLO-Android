@@ -80,7 +80,7 @@
                 android:layout_height="match_parent"
                 android:adjustViewBounds="true"
                 android:scaleType="fitCenter"
-                app:imageUrl="@{song.image}"/>
+                app:imageUrl="@{song.image}" />
         </androidx.cardview.widget.CardView>
 
         <androidx.cardview.widget.CardView
@@ -122,7 +122,7 @@
                         android:layout_height="30dp"
                         android:layout_margin="10dp"
                         android:src="@drawable/ic_baseline_notes_24"
-                        android:visibility="invisible"/>
+                        android:visibility="invisible" />
                 </LinearLayout>
 
                 <TextView
