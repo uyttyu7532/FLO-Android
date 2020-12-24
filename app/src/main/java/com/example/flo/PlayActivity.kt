@@ -15,7 +15,9 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
+import androidx.databinding.DataBindingUtil
 import com.bumptech.glide.Glide
+import com.example.flo.databinding.ActivityPlayBinding
 import com.warkiz.widget.IndicatorSeekBar
 import com.warkiz.widget.OnSeekChangeListener
 import com.warkiz.widget.SeekParams
@@ -32,9 +34,12 @@ class PlayActivity : AppCompatActivity() {
     var mediaPlayer: MediaPlayer? = null
 
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_play)
+
+        val binding:ActivityPlayBinding = DataBindingUtil.setContentView(this, R.layout.activity_play)
+
 
         mContext = this
         var isMovable = false
@@ -177,22 +182,20 @@ class PlayActivity : AppCompatActivity() {
                         200 -> {
                             if (data != null) {
                                 songUrl = data.file
-                                song_singer.text = data!!.singer
-                                song_title.text = data!!.title
-                                song_album.text = data!!.album
                                 lyrics_text_view.text = data!!.lyrics
                                 Glide.with(mContext).load(data!!.image).into(album_img)
-                            }
+                                binding.song = Song(data.singer,data.album,data.title,data.duration,data.image,data.file,data.lyrics)
 
-                            mediaPlayer!!.apply {
-                                setDataSource(songUrl)
-                                prepare()
-                                playSong()
-                            }
+                                mediaPlayer!!.apply {
+                                    setDataSource(songUrl)
+                                    prepare()
+                                    playSong()
+                                }
 
-                            seek_bar.max = (mediaPlayer!!.duration).toFloat()
-                            var mSec: Long = (mediaPlayer!!.duration).toLong()
-                            song_time.text = mSec(mSec)
+                                seek_bar.max = (mediaPlayer!!.duration).toFloat()
+                                var mSec: Long = (mediaPlayer!!.duration).toLong()
+                                song_time.text = mSec(mSec)
+                            }
                         }
                     }
                 }
