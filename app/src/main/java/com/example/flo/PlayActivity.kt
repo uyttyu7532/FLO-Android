@@ -28,6 +28,7 @@ import retrofit2.Response
 
 class PlayActivity : AppCompatActivity() {
 
+    var lyricList: MutableList<Lyric> = mutableListOf()
     lateinit var mContext: Context
     lateinit var songUrl: String
     var mediaPlayer: MediaPlayer? = null
@@ -47,7 +48,16 @@ class PlayActivity : AppCompatActivity() {
             setAudioStreamType(AudioManager.STREAM_MUSIC)
         }
 
+        val adapter = LyricsAdapter(mContext, lyricList)
 
+        lyrics_recycler_view.layoutManager = LinearLayoutManager(mContext)
+        adapter.itemClick = object : LyricsAdapter.ItemClick {
+            override fun onClick(view: View, lyric_time: Int) {
+                playing_time.text = mSec2Time(lyric_time / 1000.toLong())
+                mediaPlayer!!.seekTo(lyric_time)
+            }
+        }
+        lyrics_recycler_view.adapter = adapter
 
         // 쓰레드로 seekBar이동
         class MyThread : Thread() {
@@ -56,7 +66,10 @@ class PlayActivity : AppCompatActivity() {
                     SystemClock.sleep(500)
                     runOnUiThread {
                         seek_bar.setProgress((mediaPlayer!!.currentPosition).toFloat())
-                        playing_time.text = mSec2Time(mediaPlayer!!.currentPosition/1000.toLong())
+                        playing_time.text = mSec2Time(mediaPlayer!!.currentPosition / 1000.toLong())
+                        Log.d("time", lyricList[findLowerBound(lyricList, (mediaPlayer!!.currentPosition))].toString())
+
+                        lyrics_recycler_view.adapter = LyricsAdapter(mContext, lyricList)
                     }
                 }
             }
@@ -96,17 +109,15 @@ class PlayActivity : AppCompatActivity() {
                 //                Log.i(TAG, seekParams.fromUser.toString())
 
                 if (seekParams.fromUser) {
-                    playing_time.text = mSec2Time(seekParams.progress/1000.toLong())
+                    playing_time.text = mSec2Time(seekParams.progress / 1000.toLong())
                     tempSeekParams = seekParams.progress
                 }
             }
 
             override fun onStartTrackingTouch(seekBar: IndicatorSeekBar) {
-                // TODO seekBar를 움직이는 동안 디자인을 바꿨다가
             }
 
             override fun onStopTrackingTouch(seekBar: IndicatorSeekBar) {
-                // TODO seekBar 움직임이 끝나면 원상복귀해도 괜찮을듯
                 mediaPlayer!!.seekTo(tempSeekParams!!)
             }
         }
@@ -200,7 +211,6 @@ class PlayActivity : AppCompatActivity() {
                                     playSong()
                                 }
 
-                                val lyricList: MutableList<Lyric> = mutableListOf()
                                 for (it in data.lyrics.split("\n")) {
                                     lyricList.add(
                                         Lyric(
@@ -212,16 +222,16 @@ class PlayActivity : AppCompatActivity() {
 
                                 Log.d("lyrics", lyricList.toString())
 
-                                val adapter = LyricsAdapter(mContext, lyricList)
-
-                                lyrics_recycler_view.layoutManager = LinearLayoutManager(mContext)
-                                adapter.itemClick = object : LyricsAdapter.ItemClick {
-                                    override fun onClick(view: View, lyric_time: Int) {
-                                        playing_time.text = mSec2Time(lyric_time/1000.toLong())
-                                        mediaPlayer!!.seekTo(lyric_time)
-                                    }
-                                }
-                                lyrics_recycler_view.adapter = adapter
+//                                val adapter = LyricsAdapter(mContext, lyricList)
+//
+//                                lyrics_recycler_view.layoutManager = LinearLayoutManager(mContext)
+//                                adapter.itemClick = object : LyricsAdapter.ItemClick {
+//                                    override fun onClick(view: View, lyric_time: Int) {
+//                                        playing_time.text = mSec2Time(lyric_time / 1000.toLong())
+//                                        mediaPlayer!!.seekTo(lyric_time)
+//                                    }
+//                                }
+//                                lyrics_recycler_view.adapter = adapter
                                 seek_bar.max = (mediaPlayer!!.duration).toFloat()
                                 song_time.text = mSec2Time((mediaPlayer!!.duration).toLong())
                             }
@@ -247,7 +257,7 @@ class PlayActivity : AppCompatActivity() {
 fun mSec2Time(mSec: Long): String {
     val hours: Long = mSec / 60 / 60 % 24
     val minutes: Long = mSec / 60 % 60
-    val seconds: Long = mSec  % 60
+    val seconds: Long = mSec % 60
 
     return if (mSec < 3600000) {
         String.format("%02d:%02d", minutes, seconds)
@@ -263,6 +273,23 @@ fun time2mSec(time: String): Int {
     val msec = timeList[2].toInt()
 
     return min * 60000 + sec * 1000 + msec
+}
+
+fun findLowerBound(lyrics: List<Lyric>, target: Int): Int {
+    var start = 0
+    var mid = 0
+    var end = lyrics.size - 1
+
+    while (end > start) { // end가 start보다 같거나 작아지면 종료
+        mid = (start + end) / 2
+        if (lyrics[mid].time >= target) {
+            end = mid
+        } else {
+            start = mid + 1
+        }
+    }
+
+    return end
 }
 
 
