@@ -3,7 +3,6 @@ package com.example.flo.viewmodel
 //data class Lyric(val time: Int, val lyric: String, var colors: Int)
 
 
-
 import androidx.databinding.BaseObservable
 import androidx.databinding.Bindable
 import com.example.flo.BR

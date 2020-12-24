@@ -32,6 +32,7 @@ class PlayActivity : AppCompatActivity() {
     lateinit var mContext: Context
     lateinit var songUrl: String
     var mediaPlayer: MediaPlayer? = null
+    var nowIndex = -1
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -79,12 +80,13 @@ class PlayActivity : AppCompatActivity() {
         // 쓰레드로 seekBar이동
         class MyThread : Thread() {
             override fun run() {
-                var nowIndex = -1
+//                var nowIndex = -1
                 while (mediaPlayer!!.isPlaying) {
                     SystemClock.sleep(200)
                     runOnUiThread {
                         seek_bar.setProgress((mediaPlayer!!.currentPosition).toFloat())
                         playing_time.text = mSec2Time(mediaPlayer!!.currentPosition / 1000.toLong())
+
                         var tmpIndex = findLowerBound(lyricList, (mediaPlayer!!.currentPosition))
                         if (nowIndex != tmpIndex) {
                             lyricList[tmpIndex].colors = Color.parseColor("#ff0000")
@@ -101,7 +103,7 @@ class PlayActivity : AppCompatActivity() {
                         }
 
 
-                        Log.d("time", tmpIndex.toString() + "" + nowIndex)
+//                        Log.d("time", tmpIndex.toString() + "" + nowIndex)
                     }
                 }
             }
@@ -147,6 +149,9 @@ class PlayActivity : AppCompatActivity() {
 
             override fun onStopTrackingTouch(seekBar: IndicatorSeekBar) {
                 mediaPlayer!!.seekTo(tempSeekParams!!)
+                if (nowIndex >= 0) {
+                    lyricList[nowIndex].colors = Color.parseColor("#757575")
+                }
             }
         }
 

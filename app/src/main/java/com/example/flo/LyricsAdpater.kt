@@ -1,5 +1,4 @@
 import android.content.Context
-import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,13 +8,14 @@ import com.example.flo.viewmodel.Lyric
 import com.example.flo.databinding.RowBinding
 
 
-class LyricsAdapter (private val context : Context, private val data:List<Lyric>) : RecyclerView.Adapter<LyricsAdapter.LyricsVH>() {
+class LyricsAdapter(private val context: Context, private val data: List<Lyric>) :
+    RecyclerView.Adapter<LyricsAdapter.LyricsVH>() {
 
 
-    interface ItemClick
-    {
+    interface ItemClick {
         fun onClick(view: View, lyric_time: Int)
     }
+
     var itemClick: ItemClick? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LyricsVH {
@@ -30,8 +30,7 @@ class LyricsAdapter (private val context : Context, private val data:List<Lyric>
 
     override fun onBindViewHolder(holder: LyricsVH, position: Int) {
         holder.onBind(data[position])
-        if(itemClick != null)
-        {
+        if (itemClick != null) {
             holder?.itemView?.setOnClickListener { v ->
                 itemClick?.onClick(v, data[position].time)
             }
