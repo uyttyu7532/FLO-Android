@@ -22,6 +22,7 @@ import com.warkiz.widget.IndicatorSeekBar
 import com.warkiz.widget.OnSeekChangeListener
 import com.warkiz.widget.SeekParams
 import kotlinx.android.synthetic.main.activity_play.*
+import kotlinx.android.synthetic.main.row.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -51,6 +52,8 @@ class PlayActivity : AppCompatActivity() {
 
         val adapter = LyricsAdapter(mContext, lyricList)
 
+
+
         lyrics_recycler_view.layoutManager = LinearLayoutManager(mContext)
         adapter.itemClick = object : LyricsAdapter.ItemClick {
             override fun onClick(view: View, lyric_time: Int) {
@@ -76,7 +79,12 @@ class PlayActivity : AppCompatActivity() {
                                 lyricList[nowIndex].colors = Color.parseColor("#757575")
                             }
                             nowIndex = tmpIndex
+
+                            var centerOfScreen = lyrics_recycler_view.height / 3
+                            (lyrics_recycler_view.layoutManager as LinearLayoutManager).scrollToPositionWithOffset(tmpIndex, centerOfScreen);
                         }
+
+
                         Log.d("time",tmpIndex.toString() +""+ nowIndex)
                     }
                 }
@@ -134,6 +142,8 @@ class PlayActivity : AppCompatActivity() {
         pause_btn.setOnClickListener {
             pauseSong()
         }
+
+
 
         lyrics_layout.setOnClickListener {
             Log.d("albumImgCardView", album_img_card_view.visibility.toString())
