@@ -47,6 +47,7 @@
                 android:layout_height="wrap_content"
                 android:ellipsize="marquee"
                 android:focusable="true"
+                android:textSize="10sp"
                 android:focusableInTouchMode="true"
                 android:marqueeRepeatLimit="marquee_forever"
                 android:singleLine="true"
@@ -60,6 +61,7 @@
                 android:layout_marginTop="10dp"
                 android:ellipsize="marquee"
                 android:focusable="true"
+                android:textSize="10sp"
                 android:focusableInTouchMode="true"
                 android:marqueeRepeatLimit="marquee_forever"
                 android:singleLine="true"
@@ -121,17 +123,21 @@
                         android:id="@+id/lyrics_close_button"
                         android:layout_width="30dp"
                         android:layout_height="30dp"
-                        android:layout_margin="10dp"
+                        android:layout_margin="5dp"
                         android:clickable="true"
                         android:src="@drawable/ic_baseline_close_24"
                         android:visibility="invisible"
                         app:tint="@color/colorNotWhite" />
 
+<Space
+    android:layout_width="0dp"
+    android:layout_height="5dp"/>
+
                     <ImageView
                         android:id="@+id/lyrics_toggle"
                         android:layout_width="30dp"
                         android:layout_height="30dp"
-                        android:layout_margin="10dp"
+                        android:layout_margin="5dp"
                         android:src="@drawable/ic_baseline_notes_24"
                         android:visibility="invisible"
                         app:tint="@color/colorNotWhite" />
@@ -159,23 +165,25 @@
             </RelativeLayout>
         </androidx.cardview.widget.CardView>
 
-        <LinearLayout
+        <RelativeLayout
             android:id="@+id/seek_bar_linear_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_above="@+id/play_stop_bar"
             android:layout_gravity="center"
+            android:gravity="center"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
             android:orientation="horizontal"
             android:weightSum="10">
 
             <TextView
+                android:layout_alignParentLeft="true"
                 android:id="@+id/playing_time"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:gravity="center"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:singleLine="true"
                 android:text="00:00"
                 android:textColor="@color/colorNotWhite" />
 
@@ -184,14 +192,27 @@
             <!--            android:layout_height="wrap_content"-->
             <!--            android:layout_weight="8"/>-->
 
+            <TextView
+                android:id="@+id/song_time"
+                android:layout_alignParentRight="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:singleLine="true"
+                android:layout_centerInParent="true"
+                android:text="00:00"
+                android:textColor="@color/colorNotWhite"
+                app:songTime="@{song.duration}" />
+
             <com.warkiz.widget.IndicatorSeekBar
                 android:id="@+id/seek_bar"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="2dp"
-                android:layout_weight="8"
+                android:layout_toLeftOf="@+id/song_time"
+                android:layout_toRightOf="@+id/playing_time"
                 android:gravity="center"
                 app:isb_min="0"
+                android:layout_gravity="center"
                 app:isb_only_thumb_draggable="false"
                 app:isb_seek_smoothly="true"
                 app:isb_show_indicator="none"
@@ -201,16 +222,7 @@
                 app:isb_track_background_size="2dp"
                 app:isb_track_progress_color="@color/colorPrimary"
                 app:isb_track_progress_size="5dp" />
-
-            <TextView
-                android:id="@+id/song_time"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:textColor="@color/colorNotWhite"
-                app:songTime="@{song.duration}" />
-        </LinearLayout>
+        </RelativeLayout>
 
         <LinearLayout
             android:id="@+id/play_stop_bar"

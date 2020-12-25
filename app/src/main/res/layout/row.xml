@@ -16,11 +16,10 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
+            android:layout_marginLeft="5dp"
             android:layout_marginTop="5dp"
             android:layout_marginBottom="5dp"
             android:text="@{lyric.lyric}"
-            android:singleLine="true"
             android:textColor="@{lyric.highLight?  0xffffffff : 0xFFBDBDBD}"
             highLightBold="@{lyric.highLight}"
             highLightSize="@{lyric.highLight}"/>

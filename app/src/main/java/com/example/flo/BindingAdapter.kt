@@ -14,8 +14,8 @@ object BindingAdapter {
     @JvmStatic
     fun loadImage(imageView: ImageView, url: String?) {
         Glide.with(imageView.context).load(url)
-            .placeholder(R.color.cardview_light_background)
-            .error(R.color.cardview_light_background)
+            .placeholder(R.color.colorNotBlack)
+            .error(R.color.colorNotBlack)
             .into(imageView)
     }
 
@@ -48,7 +48,7 @@ object BindingAdapter {
     @JvmStatic
     fun highLightSize(view: TextView, isHighLight : Boolean) {
         when (isHighLight) {
-            true -> view.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18.toFloat())
+            true -> view.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16.toFloat())
             else -> view.setTextSize(TypedValue.COMPLEX_UNIT_SP, 15.toFloat())
         }
     }
