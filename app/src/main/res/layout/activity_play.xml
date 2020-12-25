@@ -13,15 +13,16 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
+        android:background="@color/colorNotBlack"
         tools:context=".PlayActivity">
 
         <LinearLayout
             android:id="@+id/song_info"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
             android:layout_marginTop="20dp"
+            android:layout_marginRight="20dp"
             android:layout_marginBottom="10dp"
             android:gravity="center"
             android:orientation="vertical">
@@ -36,7 +37,8 @@
                 android:marqueeRepeatLimit="marquee_forever"
                 android:singleLine="true"
                 android:text="@{song.title}"
-                android:textSize="28sp"
+                android:textColor="@color/colorNotWhite"
+                android:textSize="25sp"
                 android:textStyle="bold" />
 
             <TextView
@@ -48,7 +50,8 @@
                 android:focusableInTouchMode="true"
                 android:marqueeRepeatLimit="marquee_forever"
                 android:singleLine="true"
-                android:text="@{song.album}" />
+                android:text="@{song.album}"
+                android:textColor="@color/colorNotWhite" />
 
             <TextView
                 android:id="@+id/song_singer"
@@ -60,7 +63,8 @@
                 android:focusableInTouchMode="true"
                 android:marqueeRepeatLimit="marquee_forever"
                 android:singleLine="true"
-                android:text="@{song.singer}" />
+                android:text="@{song.singer}"
+                android:textColor="@color/colorNotWhite" />
 
 
         </LinearLayout>
@@ -70,6 +74,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/song_info"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
             android:layout_marginBottom="10dp"
             android:elevation="2dp"
             app:cardCornerRadius="10dp">
@@ -78,8 +84,9 @@
                 android:id="@+id/album_img"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:maxHeight="300dp"
                 android:adjustViewBounds="true"
-                android:scaleType="fitCenter"
+                android:scaleType="centerCrop"
                 app:imageUrl="@{song.image}" />
         </androidx.cardview.widget.CardView>
 
@@ -89,7 +96,10 @@
             android:layout_height="match_parent"
             android:layout_above="@+id/seek_bar_linear_layout"
             android:layout_below="@+id/album_img_card_view"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
             android:layout_marginBottom="10dp"
+            android:backgroundTint="@color/colorNotBlack"
             android:elevation="2dp"
             app:cardCornerRadius="10dp">
 
@@ -114,7 +124,8 @@
                         android:layout_margin="10dp"
                         android:clickable="true"
                         android:src="@drawable/ic_baseline_close_24"
-                        android:visibility="invisible" />
+                        android:visibility="invisible"
+                        app:tint="@color/colorNotWhite" />
 
                     <ImageView
                         android:id="@+id/lyrics_toggle"
@@ -122,7 +133,8 @@
                         android:layout_height="30dp"
                         android:layout_margin="10dp"
                         android:src="@drawable/ic_baseline_notes_24"
-                        android:visibility="invisible" />
+                        android:visibility="invisible"
+                        app:tint="@color/colorNotWhite" />
                 </LinearLayout>
 
                 <!--                <TextView-->
@@ -153,6 +165,8 @@
             android:layout_height="wrap_content"
             android:layout_above="@+id/play_stop_bar"
             android:layout_gravity="center"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
             android:orientation="horizontal"
             android:weightSum="10">
 
@@ -162,7 +176,8 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="00:00" />
+                android:text="00:00"
+                android:textColor="@color/colorNotWhite" />
 
             <!--        <SeekBar-->
             <!--            android:layout_width="0dp"-->
@@ -193,6 +208,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:gravity="center"
+                android:textColor="@color/colorNotWhite"
                 app:songTime="@{song.duration}" />
         </LinearLayout>
 
@@ -201,19 +217,23 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
+            android:layout_marginLeft="20dp"
             android:layout_marginTop="10dp"
+            android:layout_marginRight="20dp"
             android:layout_marginBottom="10dp"
             android:orientation="horizontal"
             android:weightSum="3">
 
             <ImageView
+
                 android:id="@+id/fast_rewind_btn"
                 android:layout_width="0dp"
                 android:layout_height="40dp"
                 android:layout_gravity="center"
                 android:layout_weight="1"
                 android:clickable="true"
-                android:src="@drawable/ic_baseline_fast_rewind_24" />
+                android:src="@drawable/ic_baseline_fast_rewind_24"
+                app:tint="@color/colorNotWhite" />
 
             <ImageView
                 android:id="@+id/play_btn"
@@ -223,7 +243,8 @@
                 android:layout_weight="1"
                 android:clickable="true"
                 android:src="@drawable/ic_baseline_play_arrow_24"
-                android:visibility="visible" />
+                android:visibility="visible"
+                app:tint="@color/colorNotWhite" />
 
             <ImageView
                 android:id="@+id/pause_btn"
@@ -233,16 +254,19 @@
                 android:layout_weight="1"
                 android:clickable="true"
                 android:src="@drawable/ic_baseline_pause_24"
-                android:visibility="gone" />
+                android:visibility="gone"
+                app:tint="@color/colorNotWhite" />
 
             <ImageView
+
                 android:id="@+id/fast_forward_btn"
                 android:layout_width="0dp"
                 android:layout_height="40dp"
                 android:layout_gravity="center"
                 android:layout_weight="1"
                 android:clickable="true"
-                android:src="@drawable/ic_baseline_fast_forward_24" />
+                android:src="@drawable/ic_baseline_fast_forward_24"
+                app:tint="@color/colorNotWhite" />
 
         </LinearLayout>
 

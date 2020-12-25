@@ -3,11 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
-
         <variable
             name="lyric"
             type="com.example.flo.viewmodel.Lyric" />
-
     </data>
 
     <RelativeLayout
@@ -22,6 +20,9 @@
             android:layout_marginTop="5dp"
             android:layout_marginBottom="5dp"
             android:text="@{lyric.lyric}"
-            android:textColor="@{lyric.colors}" />
+            android:singleLine="true"
+            android:textColor="@{lyric.highLight?  0xffffffff : 0xFFBDBDBD}"
+            highLightBold="@{lyric.highLight}"
+            highLightSize="@{lyric.highLight}"/>
     </RelativeLayout>
 </layout>

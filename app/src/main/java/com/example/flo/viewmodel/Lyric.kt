@@ -22,10 +22,17 @@ class Lyric : BaseObservable() {
             notifyPropertyChanged(BR.lyric)
         }
 
+//    @get:Bindable
+//    var colors: Int = 0
+//        set(t) {
+//            field = t
+//            notifyPropertyChanged(BR.colors)
+//        }
+
     @get:Bindable
-    var colors: Int = 0
+    var isHighLight: Boolean = false
         set(t) {
             field = t
-            notifyPropertyChanged(BR.colors)
+            notifyPropertyChanged(BR.highLight)
         }
 }

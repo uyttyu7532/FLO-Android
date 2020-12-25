@@ -12,6 +12,7 @@ import android.view.View
 import android.view.View.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.core.content.res.ResourcesCompat
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.flo.databinding.ActivityPlayBinding
@@ -89,9 +90,12 @@ class PlayActivity : AppCompatActivity() {
 
                         var tmpIndex = findLowerBound(lyricList, (mediaPlayer!!.currentPosition))
                         if (nowIndex != tmpIndex) {
-                            lyricList[tmpIndex].colors = Color.parseColor("#ff0000")
+//                            lyricList[tmpIndex].colors = ResourcesCompat.getColor(resources, R.color.colorPrimary, null)
+                            lyricList[tmpIndex].isHighLight = true
+
                             if (nowIndex >= 0) {
-                                lyricList[nowIndex].colors = Color.parseColor("#757575")
+//                                lyricList[nowIndex].colors =ResourcesCompat.getColor(resources, R.color.colorDefault, null)
+                                lyricList[nowIndex].isHighLight = false
                             }
                             nowIndex = tmpIndex
 
@@ -99,7 +103,7 @@ class PlayActivity : AppCompatActivity() {
                             (lyrics_recycler_view.layoutManager as LinearLayoutManager).scrollToPositionWithOffset(
                                 tmpIndex,
                                 centerOfScreen
-                            );
+                            )
                         }
 
 
@@ -141,6 +145,7 @@ class PlayActivity : AppCompatActivity() {
                     playing_time.text = mSec2Time(seekParams.progress / 1000.toLong())
                     tempSeekParams = seekParams.progress
                     seek_bar.setProgress(seekParams.progress.toFloat())
+
                 }
             }
 
@@ -150,7 +155,8 @@ class PlayActivity : AppCompatActivity() {
             override fun onStopTrackingTouch(seekBar: IndicatorSeekBar) {
                 mediaPlayer!!.seekTo(tempSeekParams!!)
                 if (nowIndex >= 0) {
-                    lyricList[nowIndex].colors = Color.parseColor("#757575")
+//                    lyricList[nowIndex].colors = Color.parseColor("#757575")
+                    lyricList[nowIndex].isHighLight = false
                 }
             }
         }
@@ -201,7 +207,7 @@ class PlayActivity : AppCompatActivity() {
             } else {
 //                lyrics_text_view.movementMethod = null
                 lyrics_toggle.setColorFilter(
-                    ContextCompat.getColor(this, R.color.colorDefault),
+                    ContextCompat.getColor(this, R.color.colorNotWhite),
                     android.graphics.PorterDuff.Mode.SRC_IN
                 )
             }
@@ -247,7 +253,7 @@ class PlayActivity : AppCompatActivity() {
                                     var tmpLy = Lyric()
                                     tmpLy.time = time2mSec(it)
                                     tmpLy.lyric = it.split("]")[1]
-                                    tmpLy.colors = Color.parseColor("#757575")
+//                                    tmpLy.colors = Color.parseColor("#757575")
                                     lyricList.add(tmpLy)
                                 }
 

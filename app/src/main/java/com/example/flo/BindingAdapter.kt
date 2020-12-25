@@ -1,9 +1,12 @@
 package com.example.flo
 
+import android.graphics.Typeface
+import android.util.TypedValue
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
 import com.bumptech.glide.Glide
+
 
 object BindingAdapter {
 
@@ -32,14 +35,21 @@ object BindingAdapter {
         }
     }
 
-//    @BindingAdapter("textColor")
-//    @JvmStatic
-//    fun isHighlighting(view:TextView, isHighlight:Boolean){
-//        if(isHighlight){
-//            view.setTextColor(Color.parseColor(R.color.colorDefault.toString()))
-//        }
-//        else{
-//            view.setTextColor(Color.parseColor(R.color.colorPrimary.toString()))
-//        }
-//    }
+    @BindingAdapter("highLightBold")
+    @JvmStatic
+    fun highLightBold(view: TextView, isHighLight : Boolean) {
+        when (isHighLight) {
+            true -> view.setTypeface(null, Typeface.BOLD)
+            else -> view.setTypeface(null, Typeface.NORMAL)
+        }
+    }
+
+    @BindingAdapter("highLightSize")
+    @JvmStatic
+    fun highLightSize(view: TextView, isHighLight : Boolean) {
+        when (isHighLight) {
+            true -> view.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18.toFloat())
+            else -> view.setTextSize(TypedValue.COMPLEX_UNIT_SP, 15.toFloat())
+        }
+    }
 }
